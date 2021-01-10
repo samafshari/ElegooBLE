@@ -20,6 +20,7 @@ using Windows.Devices.Bluetooth;
 using Windows.Security.Cryptography;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
+using System.Text;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -141,23 +142,8 @@ namespace BLE
                     return;
                 }
 
-                TxtStatus.Text = "Services:\n";
                 var services = await currentDevice.GetGattServicesAsync();
-                foreach (var service in services.Services)
-                {
-                    TxtStatus.Text += service.Uuid + "\n";
-                }
-
-                var selectedService = services.Services[0];
-
-                TxtStatus.Text += $"Characteristics of {selectedService.Uuid}:\n";
-                var characteristics = await selectedService.GetCharacteristicsAsync();
-                CharacteristicsList.ItemsSource = characteristics.Characteristics;
-
-                var selectedCharacteristic = characteristics.Characteristics.FirstOrDefault(
-                    x => x.Uuid.ToString().Contains("FFE2")); //write command to this, elegoo responds
-                if (selectedCharacteristic != null)
-                    CharacteristicsList.SelectedItem = selectedCharacteristic;
+                ServicesList.ItemsSource = services.Services;
             }
         }
 
@@ -234,6 +220,61 @@ namespace BLE
         private void BtnS_Click(object sender, RoutedEventArgs e)
         {
             Send("s");
+        }
+
+        volatile bool isReading = false;
+        private void BtnRead_Click(object sender, RoutedEventArgs e)
+        {
+            if (isReading)
+            {
+                isReading = false;
+                BtnRead.Content = "Read";
+                return;
+            }
+
+            if (CharacteristicsList.SelectedItem is GattCharacteristic characteristic)
+            {
+                isReading = true;
+                BtnRead.Content = "Stop Reading";
+                Task.Run(async () =>
+                {
+                    while (isReading)
+                    {
+                        var result = await characteristic.ReadValueAsync();
+                        string text = "";
+                        if (result.Status == GattCommunicationStatus.Success)
+                        {
+                            byte[] data = new byte[result.Value.Length];
+                            Windows.Storage.Streams.DataReader.FromBuffer(
+                                result.Value).ReadBytes(data);
+                            text = Encoding.UTF8.GetString(data, 0, data.Length);
+                        }
+                        else
+                        {
+                            text = result.Status.ToString();
+                        }
+                        if (!string.IsNullOrEmpty(text))
+                        {
+                            Dispatch(() => TxtStatus.Text += text);
+                        }
+                    }
+                });
+            }
+        }
+
+        private async void BtnUseService_Click(object sender, RoutedEventArgs e)
+        {
+            if (ServicesList.SelectedItem is GattDeviceService selectedService)
+            {
+                TxtStatus.Text += $"Characteristics of {selectedService.Uuid}:\n";
+                var characteristics = await selectedService.GetCharacteristicsAsync();
+                CharacteristicsList.ItemsSource = characteristics.Characteristics;
+
+                //var selectedCharacteristic = characteristics.Characteristics.FirstOrDefault(
+                //    x => x.Uuid.ToString().Contains("FFE2")); //write command to this, elegoo responds
+                //if (selectedCharacteristic != null)
+                //    CharacteristicsList.SelectedItem = selectedCharacteristic;
+            }
         }
     }
 }

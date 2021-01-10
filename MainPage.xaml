@@ -13,34 +13,62 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <StackPanel>
-            <TextBlock x:Name="TxtStatus" />
-            <Button
-                x:Name="BtnSearch"
-                Click="BtnSearch_Click"
-                Content="Search" />
-            <ProgressRing Name="ProgressRing" />
-            <ListView
-                x:Name="DevicesList"
-                Height="200"
-                HorizontalAlignment="Stretch"
-                DisplayMemberPath="VisibleName"
-                ItemsSource="{Binding DiscoveredDevices}"
-                SelectionMode="Single" />
-            <Button
-                x:Name="BtnConnect"
-                Click="BtnConnect_Click"
-                Content="Connect" />
-            <ListView
-                Name="CharacteristicsList"
-                Height="200"
-                HorizontalAlignment="Stretch"
-                DisplayMemberPath="Uuid"
-                SelectionMode="Single" />
-            <TextBlock Text="Command:" />
-            <TextBox x:Name="TxtCommand" />
-            <Button Content="Send" Name="BtnSend" Click="BtnSend_Click" />
-        </StackPanel>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <ScrollViewer VerticalScrollBarVisibility="Visible">
+                <StackPanel>
+                    <Button
+                        x:Name="BtnSearch"
+                        Click="BtnSearch_Click"
+                        Content="Search" />
+                    <ProgressRing Name="ProgressRing" />
+                    <ListView
+                        x:Name="DevicesList"
+                        Height="200"
+                        HorizontalAlignment="Stretch"
+                        DisplayMemberPath="VisibleName"
+                        ItemsSource="{Binding DiscoveredDevices}"
+                        SelectionMode="Single" />
+                    <Button
+                        x:Name="BtnConnect"
+                        Click="BtnConnect_Click"
+                        Content="Connect" />
+                    <ListView
+                        x:Name="ServicesList"
+                        Height="200"
+                        HorizontalAlignment="Stretch"
+                        DisplayMemberPath="Uuid"
+                        SelectionMode="Single" />
+                    <Button
+                        x:Name="BtnUseService"
+                        Click="BtnUseService_Click"
+                        Content="Get Characteristics" />
+                    <ListView
+                        Name="CharacteristicsList"
+                        Height="200"
+                        HorizontalAlignment="Stretch"
+                        DisplayMemberPath="Uuid"
+                        SelectionMode="Single" />
+                    <Button
+                        x:Name="BtnRead"
+                        Click="BtnRead_Click"
+                        Content="Read" />
+                    <TextBlock Text="Command:" />
+                    <TextBox x:Name="TxtCommand" />
+                    <Button
+                        Name="BtnSend"
+                        Click="BtnSend_Click"
+                        Content="Send" />
+                </StackPanel>
+            </ScrollViewer>
+
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible">
+                <TextBlock x:Name="TxtStatus" />
+            </ScrollViewer>
+        </Grid>
         <Grid Grid.Column="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -60,13 +88,48 @@
                     </Style>
                 </ResourceDictionary>
             </Grid.Resources>
-            <Button x:Name="BtnF" Content="F" Grid.Row="0" Grid.Column="1" Click="BtnF_Click" />
-            <Button x:Name="BtnB" Content="B" Grid.Row="2" Grid.Column="1" Click="BtnB_Click" />
-            <Button x:Name="BtnL" Content="L" Grid.Row="1" Grid.Column="0" Click="BtnL_Click" />
-            <Button x:Name="BtnR" Content="R" Grid.Row="1" Grid.Column="2" Click="BtnR_Click" />
-            <Button x:Name="Btn1" Content="1" Grid.Row="0" Grid.Column="0" Click="Btn1_Click" />
-            <Button x:Name="Btn2" Content="2" Grid.Row="0" Grid.Column="2" Click="Btn2_Click" />
-            <Button x:Name="BtnS" Content="S" Grid.Row="1" Grid.Column="1" Click="BtnS_Click" />
+            <Button
+                x:Name="BtnF"
+                Grid.Row="0"
+                Grid.Column="1"
+                Click="BtnF_Click"
+                Content="F" />
+            <Button
+                x:Name="BtnB"
+                Grid.Row="2"
+                Grid.Column="1"
+                Click="BtnB_Click"
+                Content="B" />
+            <Button
+                x:Name="BtnL"
+                Grid.Row="1"
+                Grid.Column="0"
+                Click="BtnL_Click"
+                Content="L" />
+            <Button
+                x:Name="BtnR"
+                Grid.Row="1"
+                Grid.Column="2"
+                Click="BtnR_Click"
+                Content="R" />
+            <Button
+                x:Name="Btn1"
+                Grid.Row="0"
+                Grid.Column="0"
+                Click="Btn1_Click"
+                Content="1" />
+            <Button
+                x:Name="Btn2"
+                Grid.Row="0"
+                Grid.Column="2"
+                Click="Btn2_Click"
+                Content="2" />
+            <Button
+                x:Name="BtnS"
+                Grid.Row="1"
+                Grid.Column="1"
+                Click="BtnS_Click"
+                Content="S" />
         </Grid>
     </Grid>
 </Page>
